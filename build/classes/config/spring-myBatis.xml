@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"    
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+	xmlns:p="http://www.springframework.org/schema/p"  
+	xmlns:aop="http://www.springframework.org/schema/aop"   
+	xmlns:context="http://www.springframework.org/schema/context"  
+	xmlns:jee="http://www.springframework.org/schema/jee"  
+	xmlns:tx="http://www.springframework.org/schema/tx"  
+	xsi:schemaLocation="    
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd  
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd  
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd  
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<context:property-placeholder location="classpath:resource/db.properties" />
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="username" value="${db.username}"></property>
+		<property name="password" value="${db.password}"></property>
+		<property name="driverClassName" value="${db.driverClassName}"></property>  
+		<property name="url" value="${db.url}"></property>
+		<property name="maxActive" value="${db.maxActive}"></property>
+        <property name="maxIdle" value="${db.maxIdle}"></property>
+        <property name="maxWait" value="${db.maxWait}"></property>
+        <property name="defaultAutoCommit" value="${db.defaultAutoCommit}"></property>
+	</bean>
+
+    <!-- 创建SqlSessionFactory，同时指定数据源-->
+ 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+
+		<!-- <property name="mapperLocations" value="classpath:conf/map/*.xml"/> -->
+		<property name="typeAliasesPackage" value="com.gaorui.entity" />
+
+	</bean>
+	
+	<bean id="sqlSessionTemplateBatch" class="org.mybatis.spring.SqlSessionTemplate"
+		scope="prototype">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+		<!--更新采用批量模式 -->
+		<!-- <constructor-arg index="1" value="BATCH"/> -->
+	</bean>
+		<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.gaorui.dao" />
+		<!-- <property name="markerInterface" value="cn.springmvc.dao.Sqlmaper"/> -->
+		<property name="sqlSessionTemplateBeanName" value="sqlSessionTemplateBatch" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+	
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<context:component-scan base-package="com.gaorui" />
+	<context:annotation-config />
+	<!-- spring会话管理 -->
+<!-- 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:resource/mybatis-config.xml" />
+		<property name="dataSource" ref="dataSource" /> -->
+		
+		
+<!-- 		<property name="mapperLocations">
+			<list>
+				在com.kanq.app.archives.mapper包或以下所有目录中所有以.xml结尾的文件
+				<value>classpath:com/gaorui/mapper/*.xml</value>
+			</list>
+		</property>
+		指定了这个属性之后，mybatis配置文件中的sql语句的返回实体可以不用嘉宝了
+		<property name="typeAliasesPackage" value="com.gaorui.entity" />  -->
+<!-- 	</bean> -->
+	<!--    <bean id="userDao" class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+      <property name="mapperInterface" value="com/gaorui/dao/*" />
+   
+      <property name="sqlSessionFactory" ref="sqlSessionFactory" /> 
+      </bean>
+       <bean id="springManager" class="com.gaorui.Service.SpringManager">
+      <property name="userDao" ref="userDao"/>
+ </bean> -->
+	<!-- 自动扫描com.kanq.app.springmvc.mapper包下的Mapper接口,并实现其功能  -->
+<!-- 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.gaorui.dao" />
+	</bean>
+    
+    spring事务管理
+    <bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean> -->
+    
+    <!-- 使用注解的方式来管理声明式事务 -->
+ <!--    <tx:annotation-driven transaction-manager="transactionManager"/> -->
+    
+    <!-- 事务操作 
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>  
+			<tx:method name="insert*" propagation="REQUIRED" />  
+			<tx:method name="update*" propagation="REQUIRED" />  
+			<tx:method name="edit*" propagation="REQUIRED" />  
+			<tx:method name="save*" propagation="REQUIRED" />  
+			<tx:method name="add*" propagation="REQUIRED" />  
+			<tx:method name="new*" propagation="REQUIRED" />  
+			<tx:method name="set*" propagation="REQUIRED" />  
+			<tx:method name="remove*" propagation="REQUIRED" />  
+			<tx:method name="delete*" propagation="REQUIRED" />  
+			<tx:method name="change*" propagation="REQUIRED" />  
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" />  
+			<tx:method name="find*" propagation="REQUIRED" read-only="true" />  
+			<tx:method name="load*" propagation="REQUIRED" read-only="true" />  
+			<tx:method name="*" propagation="REQUIRED" read-only="true" />  
+		</tx:attributes>  
+	</tx:advice>
+	
+	<aop:config>  
+		<aop:pointcut id="serviceOperation" expression="execution(* comcompany.service..*.*(..))" />  
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation" />  
+	</aop:config>
+	-->
+</beans>

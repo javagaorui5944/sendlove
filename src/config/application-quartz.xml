@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="  
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd  
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<!-- 任务实体 -->
+	<bean id="testTaskBean" class="com.gaorui.quartz.quartz" />
+
+	<!-- 定时更新政策任务方法 -->
+	<bean id="testTaskTimerMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="testTaskBean" />
+		<!-- targetMethod 配置定时执行的方法名 -->
+		<property name="targetMethod" value="executeAction" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 定时更新政策触发器 -->
+	<bean id="testTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="testTaskTimerMethod" />
+		<!-- 每个1分钟的第0秒执行 -->
+		<property name="cronExpression" value="0 45 18 * * ?" />
+	</bean>
+
+	<!-- 订制任务列表 -->
+	<bean id="scheduler"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="testTaskTrigger" />
+			</list>
+		</property>
+	</bean>
+</beans>  
