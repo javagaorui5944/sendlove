@@ -30,7 +30,7 @@ public class UserController {
 
 	
 	//代码是灵魂,注释是心声。
-	//不愿出的钱我来出把。
+	//
 	/**
 	 * 用户登录验证
 	 * 
