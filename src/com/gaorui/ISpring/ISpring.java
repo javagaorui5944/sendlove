@@ -62,4 +62,8 @@ public interface ISpring {
 	
 	//判断用户是否发起过拼车,或者是在某个拼车队伍接口
 	public JSONObject JudgeCarpoolingMan(List<Carpooling> carpoolings,Long user_id);
+	
+	//用户查看自己的拼车或加入拼车队伍的信息接口
+	
+	public JSONObject My_Carpooling(List<Carpooling> carpoolings,Long user_id);
 }
