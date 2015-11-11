@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.gaorui.ISpring.ISpring;
 import com.gaorui.dao.UserDao;
 import com.gaorui.entity.Carpooling;
@@ -14,6 +16,7 @@ import com.gaorui.entity.Carpooling_user;
 import com.gaorui.entity.Integral;
 import com.gaorui.entity.User;
 import com.gaorui.redisdao.redisdao;
+import com.gaorui.util.CommonUtil;
 
 public class SpringManager implements ISpring{
 	@Resource
@@ -58,13 +61,13 @@ public class SpringManager implements ISpring{
 	}
 	@Override
 	public Carpooling_user SelectCarpooling_idByUser_id(Long user_id) {
-		// TODO Auto-generated method stub
+		
 		return userDao.SelectCarpooling_idByUser_id(user_id);
 	}
 	@Override
 	public List<Carpooling_user> SelectUser_idByCarpooling_id(
 			Long Carpooling_id, Long user_id) {
-		// TODO Auto-generated method stub
+		
 		return userDao.SelectUser_idByCarpooling_id(Carpooling_id, user_id);
 	}
 	@Override
@@ -126,6 +129,124 @@ public class SpringManager implements ISpring{
 	public User SearchSameUserName(Long user_id) {
 		
 		return userDao.SearchSameUserName(user_id);
+	}
+	
+	//判断用户是否发起过拼车,或者是在某个拼车队伍
+	@Override
+	public JSONObject JudgeCarpoolingMan(List<Carpooling> carpoolings,Long user_id) {
+		
+		JSONObject jsonObject1 = new JSONObject();
+
+		JSONArray jsonArray = new JSONArray();
+
+		JSONArray jsonArray2 = new JSONArray();
+		
+		// 如果为空则证明登录用户没有发起过正在拼车的队伍
+		if (carpoolings.toString().equals("[]")) {
+			System.out.println("[]");
+			List<Carpooling_user> carpooling_user = userDao
+					.SelectCarpooling_UserByUser_id(user_id);
+			// 该用户既没有发起拼车,也没加入拼车队伍
+			if (carpooling_user.toString().equals("[]")) {
+
+				jsonObject1.put("s_carpooling", jsonArray);
+
+				jsonObject1.put("carpooling_user", jsonArray2);
+				return CommonUtil.constructResponse(0, "该用户既没有发起拼车,也没加入拼车队伍",
+						jsonObject1);
+			}
+			// 该用户没有发起拼车,但加入了拼车队伍
+			else {
+				for (int i = 0; i < carpooling_user.size(); i++) {
+					JSONObject jsonObject2 = new JSONObject();
+
+					Long Carpooling_id = carpooling_user.get(i)
+							.getCarpooling_id();
+
+					jsonObject2.put("Carpooling_id", Carpooling_id.toString());
+
+					System.out.println("Carpooling_id:" + Carpooling_id);
+					jsonArray.add(jsonObject2);
+				}
+
+				jsonObject1.put("s_carpooling", jsonArray2);
+
+				jsonObject1.put("carpooling_user", jsonArray);
+
+				return CommonUtil.constructResponse(1, "该用户没有发起拼车,但加入了拼车队伍",
+						jsonObject1);
+			}
+
+		}
+
+		else {
+
+			List<Carpooling_user> carpooling_user = userDao
+					.SelectCarpooling_UserByUser_id(user_id);
+			// 该用户发起了拼车,也加入了拼车队伍
+			if (!carpooling_user.toString().equals("[]")) {
+
+				for (int i = 0; i < carpooling_user.size(); i++) {
+					JSONObject jsonObject4 = new JSONObject();
+					Long Carpooling_id = carpooling_user.get(i)
+							.getCarpooling_id();
+
+					jsonObject4.put("Carpooling_id", Carpooling_id.toString());
+
+					System.out.println("carpooling_user_Carpooling_id:"
+							+ Carpooling_id);
+					jsonArray2.add(jsonObject4);
+				}
+
+				for (int i = 0; i < carpoolings.size(); i++) {
+
+					JSONObject jsonObject3 = new JSONObject();
+
+					Long Mian_Carpooling_id = carpoolings.get(i)
+							.getCarpooling_id();
+
+					jsonObject3.put("Mian_Carpooling_id",
+							Mian_Carpooling_id.toString());
+
+					System.out.println("carpoolings_Carpooling_id:"
+							+ Mian_Carpooling_id);
+
+					jsonArray.add(jsonObject3);
+				}
+
+				jsonObject1.put("s_carpooling", jsonArray);
+
+				jsonObject1.put("carpooling_user", jsonArray2);
+
+				return CommonUtil.constructResponse(1, "该用户发起了拼车,也加入了拼车队伍",
+						jsonObject1);
+
+			}
+
+			// 该用户发起了拼车,但没加入拼车队伍
+			else {
+
+				for (int i = 0; i < carpoolings.size(); i++) {
+
+					JSONObject jsonObject4 = new JSONObject();
+
+					Long Carpooling_id = carpoolings.get(i).getCarpooling_id();
+
+					jsonObject4.put("Carpooling_id", Carpooling_id.toString());
+
+					System.out.println("Carpooling_id:" + Carpooling_id);
+
+					jsonArray.add(jsonObject4);
+				}
+
+				jsonObject1.put("s_carpooling", jsonArray);
+
+				jsonObject1.put("carpooling_user", jsonArray2);
+
+				return CommonUtil.constructResponse(1, "该用户发起了拼车,但没加入拼车队伍",
+						jsonObject1);
+			}
+		}
 	}
 
 

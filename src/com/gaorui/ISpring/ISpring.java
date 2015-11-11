@@ -5,6 +5,9 @@ import java.util.List;
 
 
 
+
+
+import com.alibaba.fastjson.JSONObject;
 import com.gaorui.entity.Carpooling_user;
 import com.gaorui.entity.Carpooling;
 import com.gaorui.entity.Integral;
@@ -56,4 +59,7 @@ public interface ISpring {
 	public int InsertS_userInfo(Long user_id);
 	
 	public User SearchSameUserName(Long user_id);
+	
+	//判断用户是否发起过拼车,或者是在某个拼车队伍接口
+	public JSONObject JudgeCarpoolingMan(List<Carpooling> carpoolings,Long user_id);
 }
