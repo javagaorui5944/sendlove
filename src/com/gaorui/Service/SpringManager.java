@@ -422,4 +422,10 @@ public class SpringManager implements ISpring {
 		}
 	}
 
+	@Override
+	public List<Carpooling> ShowMapS_carPooling() {
+		
+		return userDao.ShowMapS_carPooling();
+	}
+
 }

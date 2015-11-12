@@ -19,7 +19,7 @@ public interface UserDao {
 
 	final String integral = "integral_id,user_id,integral_level,integral_carpoolingcount,integral_initiatecount,integral_goodpraisecount";
 
-	final String carpooling = "Carpooling_id,user_id,Carpooling_origin,Carpooling_destination,Carpooling_Date,Carpooling_distance,Carpooling_way,Carpooling_count,Carpooling_nearme,Carpooling_content,Carpooling_status,Carpooling_longitude,Carpooling_latitude";
+	final String carpooling = "Carpooling_id,user_id,Carpooling_origin,Carpooling_destination,Carpooling_Date,Carpooling_distance,Carpooling_way,Carpooling_count,Carpooling_nearme,Carpooling_content,Carpooling_status,Carpooling_longitude,Carpooling_latitude,End_Carpooling_longitude,End_Carpooling_latitude";
 
 	final String carpooling_user = "Carpooling_id,user_id";
 
@@ -125,5 +125,11 @@ public interface UserDao {
 	//查看用户名是否重复
 	@Select("SELECT "+user+" FROM s_user WHERE user_id=#{0}")
 	public User SearchSameUserName(Long user_id);
+	
+	//地图
+	
+	@Select("SELECT " + carpooling
+			+ " FROM s_carpooling ")
+	public List<Carpooling> ShowMapS_carPooling();
 	
 }

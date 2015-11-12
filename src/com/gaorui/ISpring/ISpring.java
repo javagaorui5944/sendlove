@@ -66,4 +66,7 @@ public interface ISpring {
 	//用户查看自己的拼车或加入拼车队伍的信息接口
 	
 	public JSONObject My_Carpooling(List<Carpooling> carpoolings,Long user_id);
+	
+	//地图
+	public List<Carpooling> ShowMapS_carPooling();
 }

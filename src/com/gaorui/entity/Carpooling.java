@@ -10,6 +10,20 @@ public class Carpooling {
 	private Date Carpooling_Date;
 	private int Carpooling_distance;
 	private String Carpooling_way;
+	private double End_Carpooling_latitude;
+	private double  End_Carpooling_longitude;
+	public double getEnd_Carpooling_latitude() {
+		return End_Carpooling_latitude;
+	}
+	public void setEnd_Carpooling_latitude(double end_Carpooling_latitude) {
+		End_Carpooling_latitude = end_Carpooling_latitude;
+	}
+	public double getEnd_Carpooling_longitude() {
+		return End_Carpooling_longitude;
+	}
+	public void setEnd_Carpooling_longitude(double end_Carpooling_longitude) {
+		End_Carpooling_longitude = end_Carpooling_longitude;
+	}
 	public Long getCarpooling_id() {
 		return Carpooling_id;
 	}
