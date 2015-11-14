@@ -1,5 +1,6 @@
 package com.gaorui.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -89,12 +90,14 @@ public class SpringManager implements ISpring {
 			String Carpooling_destination, String Carpooling_Date,
 			int Carpooling_distance, String Carpooling_way,
 			int Carpooling_count, double Carpooling_longitude,
-			double Carpooling_latitude, Long Main_user_id) {
+			double Carpooling_latitude, double End_Carpooling_longitude,
+			double End_Carpooling_latitude,Long Main_user_id) {
 
 		return userDao.InitiateCarpooling(Carpooling_origin,
 				Carpooling_destination, Carpooling_Date, Carpooling_distance,
 				Carpooling_way, Carpooling_count, Carpooling_longitude,
-				Carpooling_latitude, Main_user_id);
+				Carpooling_latitude, End_Carpooling_longitude,
+				 End_Carpooling_latitude,Main_user_id);
 	}
 
 	@Override
@@ -422,10 +425,26 @@ public class SpringManager implements ISpring {
 		}
 	}
 
+	//查找出符合用户给出周围范围内的所有帖子
 	@Override
-	public List<Carpooling> ShowMapS_carPooling() {
+	public List<Carpooling> ShowMapS_carPooling(double user_latitude,double user_longitude,int radius) {
 		
-		return userDao.ShowMapS_carPooling();
+		List<Carpooling> Carpoolings = userDao.ShowMapS_carPooling();
+		
+		List<Carpooling> Range_Carpoolings = new ArrayList<Carpooling>();
+		
+		for (Carpooling c : Carpoolings) {
+			
+			double  carpooling_latitude = c.getCarpooling_latitude();
+			
+			double  carpooling_longitude = c.getCarpooling_longitude();
+			
+			if(CommonUtil.JudgeRange(user_latitude, user_longitude, carpooling_latitude, carpooling_longitude, radius)){
+				
+				Range_Carpoolings.add(c);
+			}
+		}
+		return Range_Carpoolings;
 	}
 
 }

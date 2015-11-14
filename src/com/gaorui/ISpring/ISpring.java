@@ -39,7 +39,8 @@ public interface ISpring {
 			String Carpooling_destination, String Carpooling_Date,
 			int Carpooling_distance, String Carpooling_way,
 			int Carpooling_count, double Carpooling_longitude,
-			double Carpooling_latitude, Long Main_user_id);
+			double Carpooling_latitude,double End_Carpooling_longitude,
+			double End_Carpooling_latitude, Long Main_user_id);
 
 	public int updateCarpooling_status(Long Carpooling_id);
 
@@ -68,5 +69,5 @@ public interface ISpring {
 	public JSONObject My_Carpooling(List<Carpooling> carpoolings,Long user_id);
 	
 	//地图
-	public List<Carpooling> ShowMapS_carPooling();
+	public List<Carpooling> ShowMapS_carPooling(double user_latitude,double user_longitude,int radius);
 }

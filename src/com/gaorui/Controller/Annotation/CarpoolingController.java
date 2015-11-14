@@ -367,7 +367,8 @@ public class CarpoolingController {
 			String Carpooling_destination, String Carpooling_Date,
 			int Carpooling_distance, String Carpooling_way,
 			int Carpooling_count, double Carpooling_longitude,
-			double Carpooling_latitude) {
+			double Carpooling_latitude, double End_Carpooling_longitude,
+			double End_Carpooling_latitude) {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		HttpSession htppSession = request.getSession();
 
@@ -378,7 +379,8 @@ public class CarpoolingController {
 		int num = springManager.InitiateCarpooling(Carpooling_origin,
 				Carpooling_destination, Carpooling_Date, Carpooling_distance,
 				Carpooling_way, Carpooling_count, Carpooling_longitude,
-				Carpooling_latitude, Main_user_id);
+				Carpooling_latitude, End_Carpooling_longitude,
+				 End_Carpooling_latitude, Main_user_id);
 
 		if (num > 0) {
 			return CommonUtil.constructResponse(1, "ok", null);

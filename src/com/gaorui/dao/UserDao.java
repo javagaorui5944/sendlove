@@ -66,7 +66,7 @@ public interface UserDao {
 	public int updatecu_statusByUser_idCarpooling_id(Long user_id,
 			Long Carpooling_id);
 
-	@Insert("insert into s_carpooling(Carpooling_origin,Carpooling_destination,Carpooling_Date,Carpooling_distance,Carpooling_way,Carpooling_count,Carpooling_longitude,Carpooling_latitude,user_id) values('${Carpooling_origin}','${Carpooling_destination}','${Carpooling_Date}','${Carpooling_distance}','${Carpooling_way}',${Carpooling_count},${Carpooling_longitude},${Carpooling_latitude},${user_id})")
+	@Insert("insert into s_carpooling(Carpooling_origin,Carpooling_destination,Carpooling_Date,Carpooling_distance,Carpooling_way,Carpooling_count,Carpooling_longitude,Carpooling_latitude,End_Carpooling_longitude,End_Carpooling_latitude,user_id) values('${Carpooling_origin}','${Carpooling_destination}','${Carpooling_Date}','${Carpooling_distance}','${Carpooling_way}',${Carpooling_count},${Carpooling_longitude},${Carpooling_latitude}, ${End_Carpooling_longitude},${End_Carpooling_latitude}${user_id})")
 	public int InitiateCarpooling(
 			@Param("Carpooling_origin") String Carpooling_origin,
 			@Param("Carpooling_destination") String Carpooling_destination,
@@ -76,6 +76,8 @@ public interface UserDao {
 			@Param("Carpooling_count") int Carpooling_count,
 			@Param("Carpooling_longitude") double Carpooling_longitude,
 			@Param("Carpooling_latitude") double Carpooling_latitude,
+			@Param("End_Carpooling_longitude") double End_Carpooling_longitude,
+			@Param("End_Carpooling_latitude") double End_Carpooling_latitude,
 			@Param("user_id") Long user_id);
 
 	@Update("UPDATE s_carpooling SET Carpooling_status =100 WHERE Carpooling_id=#{0}")

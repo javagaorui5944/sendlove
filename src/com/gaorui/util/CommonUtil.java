@@ -21,6 +21,7 @@ public class CommonUtil {
 		jo.put("data", data);
 		return jo;
 	}
+
 	/**
 	 * @author jipeng
 	 * @return
@@ -59,25 +60,64 @@ public class CommonUtil {
 		System.out.println(a + "a");
 		return a;
 	}
-	
-	//查看两个经度纬度的距离(单位km)
-	private static double rad(double d)
-	{
-	   return d * Math.PI / 180.0;
+
+	// 查看两个经度纬度的距离(单位km)
+	private static double rad(double d) {
+		return d * Math.PI / 180.0;
 	}
 
-	public static double GetDistance(double lat1, double lng1, double lat2, double lng2)
-	{
-	   final  double EARTH_RADIUS = 6378.137;
-	   double radLat1 = rad(lat1);
-	   double radLat2 = rad(lat2);
-	   double a = radLat1 - radLat2;
-	   double b = rad(lng1) - rad(lng2);
-	   double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) + 
-	    Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
-	   s = s * EARTH_RADIUS;
-	   s = Math.round(s * 10000) / 10000;
-	   return s;
+	public static double GetDistance(double lat1, double lng1, double lat2,
+			double lng2) {
+		
+		final double EARTH_RADIUS = 6378.137;
+		
+		double radLat1 = rad(lat1);
+		
+		double radLat2 = rad(lat2);
+		
+		double a = radLat1 - radLat2;
+		
+		double b = rad(lng1) - rad(lng2);
+		
+		double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2)
+				+ Math.cos(radLat1) * Math.cos(radLat2)
+				* Math.pow(Math.sin(b / 2), 2)));
+		
+		s = s * EARTH_RADIUS;
+		
+		s = Math.round(s * 10000) / 10000;
+		
+		return s;
 	}
 
+	// 根据用户传入的范围距离(m)判断B点经纬度是否在用户定点A的范围内,返回true代表在范围内。
+	public static boolean JudgeRange(double lat1, double lng1, double lat2,
+			double lng2, int radius) {
+		boolean res = false;
+
+		final double EARTH_RADIUS = 6378.137;
+
+		double radLat1 = rad(lat1);
+
+		double radLat2 = rad(lat2);
+
+		double a = radLat1 - radLat2;
+
+		double b = rad(lng1) - rad(lng2);
+
+		double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2)
+				+ Math.cos(radLat1) * Math.cos(radLat2)
+				* Math.pow(Math.sin(b / 2), 2)));
+
+		s = s * EARTH_RADIUS;
+
+		s = Math.round(s * 10000)/ 1000;// 返回长度单位为m
+
+		if (radius > s) {
+			res = true;
+		}
+
+		return res;
+
+	}
 }
