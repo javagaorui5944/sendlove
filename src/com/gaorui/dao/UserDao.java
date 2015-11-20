@@ -34,12 +34,8 @@ public interface UserDao {
 
 	// @Select("SELECT "+carpooling+" FROM s_carpooling WHERE Carpooling_longitude<${user_longitude} AND Carpooling_latitude<${user_latitude}")
 	@Select("SELECT " + carpooling
-			+ " FROM s_carpooling ")
-	public List<Carpooling> ShowS_carPooling(
-			@Param("Big1_user_longitude") double Big1_user_longitude,
-			@Param("Big1_user_latitude") double Big1_user_latitude,
-			@Param("Big2_user_longitude") double Big2_user_longitude,
-			@Param("Big2_user_latitude") double Big2_user_latitude);
+			+ " FROM s_carpooling ORDER BY Carpooling_Date DESC LIMIT #{0},#{1}")
+	public List<Carpooling> ShowS_carPooling(int c_id,int showPageCount);
 
 	@Select("SELECT " + carpooling
 			+ " FROM s_carpooling WHERE  Carpooling_id=#{0}")
@@ -66,7 +62,7 @@ public interface UserDao {
 	public int updatecu_statusByUser_idCarpooling_id(Long user_id,
 			Long Carpooling_id);
 
-	@Insert("insert into s_carpooling(Carpooling_origin,Carpooling_destination,Carpooling_Date,Carpooling_distance,Carpooling_way,Carpooling_count,Carpooling_longitude,Carpooling_latitude,End_Carpooling_longitude,End_Carpooling_latitude,user_id) values('${Carpooling_origin}','${Carpooling_destination}','${Carpooling_Date}','${Carpooling_distance}','${Carpooling_way}',${Carpooling_count},${Carpooling_longitude},${Carpooling_latitude}, ${End_Carpooling_longitude},${End_Carpooling_latitude}${user_id})")
+	@Insert("insert into s_carpooling(Carpooling_origin,Carpooling_destination,Carpooling_Date,Carpooling_distance,Carpooling_way,Carpooling_count,Carpooling_longitude,Carpooling_latitude,End_Carpooling_longitude,End_Carpooling_latitude,user_id) values('${Carpooling_origin}','${Carpooling_destination}','${Carpooling_Date}','${Carpooling_distance}','${Carpooling_way}',${Carpooling_count},${Carpooling_longitude},${Carpooling_latitude}, ${End_Carpooling_longitude},${End_Carpooling_latitude},${user_id})")
 	public int InitiateCarpooling(
 			@Param("Carpooling_origin") String Carpooling_origin,
 			@Param("Carpooling_destination") String Carpooling_destination,
@@ -134,4 +130,20 @@ public interface UserDao {
 			+ " FROM s_carpooling ")
 	public List<Carpooling> ShowMapS_carPooling();
 	
+	//查出拼车id 根据时间
+	@Select("SELECT  Carpooling_id FROM s_carpooling WHERE Carpooling_Date='${Carpooling_Date}'")
+	public int GetCarpooling_idByCarpooling_Date(@Param("Carpooling_Date")  String Carpooling_Date);
+	
+	
+	//下拉分页返回历史数据
+	@Select("SELECT "+carpooling+" FROM s_carpooling WHERE Carpooling_id<#{0} ORDER BY Carpooling_Date   DESC LIMIT 0,10")
+	public List<Carpooling> GetHistoryCarpooling(int c_id);
+	
+	//刷新操作
+	@Select("SELECT "+carpooling+" FROM s_carpooling  WHERE Carpooling_id>#{0} ORDER BY Carpooling_Date   DESC ")
+	public List<Carpooling> FlushCarpooling(int c_id);
+	
+	//查找s_carpooling最后一条数据
+	@Select("SELECT Carpooling_id FROM s_carpooling ORDER BY Carpooling_Date  LIMIT 0,1")
+	public Long SelectLastCarpooling_id();
 }

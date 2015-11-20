@@ -1,13 +1,13 @@
 package com.gaorui.entity;
 
-import java.util.Date;
+
 
 public class Carpooling {
 	private Long Carpooling_id;
 	private Long user_id;
 	private String Carpooling_origin;
 	private String Carpooling_destination;
-	private Date Carpooling_Date;
+	private String Carpooling_Date;
 	private int Carpooling_distance;
 	private String Carpooling_way;
 	private double End_Carpooling_latitude;
@@ -48,10 +48,10 @@ public class Carpooling {
 	public void setCarpooling_destination(String carpooling_destination) {
 		Carpooling_destination = carpooling_destination;
 	}
-	public Date getCarpooling_Date() {
+	public String getCarpooling_Date() {
 		return Carpooling_Date;
 	}
-	public void setCarpooling_Date(Date carpooling_Date) {
+	public void setCarpooling_Date(String carpooling_Date) {
 		Carpooling_Date = carpooling_Date;
 	}
 	public int getCarpooling_distance() {

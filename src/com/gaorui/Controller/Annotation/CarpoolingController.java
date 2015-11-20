@@ -11,15 +11,13 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 
 import com.alibaba.fastjson.JSONObject;
 import com.gaorui.ISpring.ISpring;
 import com.gaorui.entity.Carpooling_user;
 import com.gaorui.entity.Carpooling;
-
 import com.gaorui.entity.User;
 import com.gaorui.util.CommonUtil;
 
@@ -35,69 +33,91 @@ public class CarpoolingController {
 	 * 用户查看周围的拼车帖子,用户自己确定周围多少km
 	 * 
 	 * @param request
-	 * @param user_longitude
-	 * @param user_latitude
+	 * @param
+	 * @param
 	 * @param distanceAround
 	 * @return code,message,object
+	 * @author gr
 	 */
 	@RequestMapping(value = "/ShowS_carPooling", method = RequestMethod.GET)
 	@ResponseBody
-	public JSONObject ShowS_carPooling(HttpServletRequest request,
-			HttpServletResponse response) {
+	public JSONObject ShowS_carPooling(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(value = "Carpooling_Date", required = false) String Carpooling_Date,
+			@RequestParam(value = "Flush_Rus", required = false) String Flush_Rus) {
 
 		response.setHeader("Access-Control-Allow-Origin", "*");
 
-		/*
-		 * @RequestParam(value = "user_longitude", required = false) double
-		 * user_longitude,
-		 * 
-		 * @RequestParam(value = "user_latitude", required = false) double
-		 * user_latitude,
-		 * 
-		 * @RequestParam(value = "distanceAround", required = false) int
-		 * distanceAround
-		 */
-		/*
-		 * JSONObject jsonObject = new JSONObject();
-		 * 
-		 * JSONArray jsonArray = new JSONArray();
-		 */
-		/*
-		 * HttpSession httpSession = request.getSession();
-		 * 
-		 * User user = (User) httpSession.getAttribute("user");
-		 * 
-		 * Long user_id = user.getUser_id();
-		 */
-		double user_longitude = 100;
+		System.out.println("Flush:" + Flush_Rus + "--Carpooling_Date:"
+				+ Carpooling_Date);
 
-		double user_latitude = 100;
+		int pageCount = 0;
 
-		int distanceAround = 100;
+		
+		//第一次加载操作
+		if (Carpooling_Date == null && Flush_Rus == null) {
+			System.out.println("Carpooling_Date == null && Flush_Rus == null");
+			
+			List<Carpooling> Carpooling = springManager.ShowS_carPooling(pageCount,
+					pageCount + 10);
+			
+			if (Carpooling.toString().equals("[]")) {
 
-		List<Carpooling> Carpooling = springManager.ShowS_carPooling(
-				user_longitude, user_latitude, distanceAround);
+				return CommonUtil.constructResponse(0, "暂时没有用户发起拼车", null);
 
-		if (Carpooling == null) {
+			} else {
 
-			return CommonUtil.constructResponse(0, "false", null);
+				return CommonUtil.constructResponse(1, "第一次加载操作", Carpooling);
 
-		} else {
-			/*
-			 * for (int i = 0; i < Carpooling.size(); i++) { Long Carpooling_id
-			 * = Carpooling.get(i).getCarpooling_id(); Carpooling_user cu =
-			 * springManager.JudgeCarpoolingByCarpooling_User_id(Carpooling_id,
-			 * user_id); if(cu != null){
-			 * 
-			 * jsonObject.put("ok",Carpooling.get(i)); } else{
-			 * jsonObject.put("Carpooling"+i,Carpooling.get(i)); }
-			 * 
-			 * 
-			 * } jsonArray.add(jsonObject);
-			 */
-			return CommonUtil.constructResponse(1, "ok", Carpooling);
-
+			}
+		} 
+		
+		//刷新操作
+		else if (Carpooling_Date != null && Flush_Rus.equals("flush")) {
+			
+			int c_id =
+			springManager.GetCarpooling_idByCarpooling_Date(Carpooling_Date);
+			 
+			List<Carpooling> Carpooling = springManager.FlushCarpooling(c_id);
+			
+			
+			System.out.println("Carpooling_Date != null && Flush_Rus.equals('flush')");
+			
+			return CommonUtil.constructResponse(1, "刷新操作", Carpooling);
+			
+		} 
+		
+		//下拉分页操作
+		else if(Carpooling_Date != null && !Flush_Rus.equals("flush")){
+			
+			int  c_id =
+			  springManager.GetCarpooling_idByCarpooling_Date(Carpooling_Date);
+			 
+			Long Last_c_id = springManager.SelectLastCarpooling_id();
+			
+			if(c_id < Last_c_id ){
+				
+				return CommonUtil.constructResponse(0, "下拉已无更多历史数据", null);
+				
+			}
+			List<Carpooling> Carpooling = springManager.GetHistoryCarpooling(c_id);
+			
+			System.out.println("else");
+			
+			return CommonUtil.constructResponse(1, "下拉分页操作", Carpooling);
+			
 		}
+		else{
+			
+			return CommonUtil.constructResponse(0, "服务端逻辑出错",null);
+			
+		}
+	
+
+	
+
+		
 	}
 
 	/**
@@ -380,7 +400,7 @@ public class CarpoolingController {
 				Carpooling_destination, Carpooling_Date, Carpooling_distance,
 				Carpooling_way, Carpooling_count, Carpooling_longitude,
 				Carpooling_latitude, End_Carpooling_longitude,
-				 End_Carpooling_latitude, Main_user_id);
+				End_Carpooling_latitude, Main_user_id);
 
 		if (num > 0) {
 			return CommonUtil.constructResponse(1, "ok", null);

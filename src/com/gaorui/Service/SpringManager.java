@@ -36,14 +36,9 @@ public class SpringManager implements ISpring {
 
 	// 需要计算出用户周围的所有的距离范围
 	@Override
-	public List<Carpooling> ShowS_carPooling(double user_longitude,
-			double user_latitude, int distanceAround) {
-		double Big1_user_longitude = 0;
-		double Big1_user_latitude = 0;
-		double Big2_user_longitude = 0;
-		double Big2_user_latitude = 0;
-		return userDao.ShowS_carPooling(Big1_user_longitude,
-				Big1_user_latitude, Big2_user_longitude, Big2_user_latitude);
+	public List<Carpooling> ShowS_carPooling(int c_id,int showPageCount) {
+		
+		return userDao.ShowS_carPooling(c_id,showPageCount);
 	}
 
 	@Override
@@ -445,6 +440,30 @@ public class SpringManager implements ISpring {
 			}
 		}
 		return Range_Carpoolings;
+	}
+
+	@Override
+	public int GetCarpooling_idByCarpooling_Date(String Carpooling_Date) {
+		
+		return userDao.GetCarpooling_idByCarpooling_Date(Carpooling_Date);
+	}
+
+	@Override
+	public List<Carpooling> GetHistoryCarpooling(int c_id) {
+		
+		return userDao.GetHistoryCarpooling(c_id);
+	}
+
+	@Override
+	public List<Carpooling> FlushCarpooling(int c_id) {
+		
+		return userDao.FlushCarpooling(c_id);
+	}
+
+	@Override
+	public Long SelectLastCarpooling_id() {
+		
+		return userDao.SelectLastCarpooling_id();
 	}
 
 }

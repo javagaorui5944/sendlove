@@ -37,7 +37,7 @@ public class UserController {
 	 * @param password
 	 * @return code,message,object
 	 */
-	@RequestMapping(value = "/LoginCl", method = RequestMethod.POST)
+	@RequestMapping(value = "/LoginCl", method = RequestMethod.GET)
 	@ResponseBody
 	public JSONObject LoginCl(HttpServletRequest request, Long user_tel,
 			String password, HttpServletResponse response) {

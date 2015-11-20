@@ -7,6 +7,10 @@ import java.util.List;
 
 
 
+
+
+
+
 import com.alibaba.fastjson.JSONObject;
 import com.gaorui.entity.Carpooling_user;
 import com.gaorui.entity.Carpooling;
@@ -18,8 +22,7 @@ public interface ISpring {
 
 	public Integral ShowPersonalInfo(Long user_id);
 
-	public List<Carpooling> ShowS_carPooling(double user_longitude,
-			double user_latitude, int distanceAround);
+	public List<Carpooling> ShowS_carPooling(int c_id,int showPageCount);
 
 	public Carpooling SelectCarpoolingByCarpooling_id(Long Carpooling_id);
 
@@ -70,4 +73,15 @@ public interface ISpring {
 	
 	//地图
 	public List<Carpooling> ShowMapS_carPooling(double user_latitude,double user_longitude,int radius);
+	
+	public int GetCarpooling_idByCarpooling_Date( String Carpooling_Date);
+	
+	//下拉查找历史拼车贴
+	public List<Carpooling> GetHistoryCarpooling(int c_id);
+
+	//刷新帖子列表操作
+	public List<Carpooling> FlushCarpooling(int c_id);
+	
+	//查找帖子最后一条数据
+	public Long SelectLastCarpooling_id();
 }
