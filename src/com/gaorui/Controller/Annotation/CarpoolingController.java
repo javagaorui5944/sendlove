@@ -20,6 +20,7 @@ import com.gaorui.entity.Carpooling_user;
 import com.gaorui.entity.Carpooling;
 import com.gaorui.entity.User;
 import com.gaorui.util.CommonUtil;
+import com.gaorui.util.PushUtil;
 
 @Controller
 public class CarpoolingController {
@@ -44,19 +45,19 @@ public class CarpoolingController {
 	public JSONObject ShowS_carPooling(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(value = "Carpooling_Date", required = false) String Carpooling_Date,
+			@RequestParam(value = "c_id", required = false) Long c_id,
 			@RequestParam(value = "Flush_Rus", required = false) String Flush_Rus) {
 
 		response.setHeader("Access-Control-Allow-Origin", "*");
 
-		System.out.println("Flush:" + Flush_Rus + "--Carpooling_Date:"
-				+ Carpooling_Date);
+		System.out.println("Flush:" + Flush_Rus + "--c_id:"
+				+ c_id);
 
 		int pageCount = 0;
 
 		
 		//第一次加载操作
-		if (Carpooling_Date == null && Flush_Rus == null) {
+		if (c_id == null && Flush_Rus == null) {
 			System.out.println("Carpooling_Date == null && Flush_Rus == null");
 			
 			List<Carpooling> Carpooling = springManager.ShowS_carPooling(pageCount,
@@ -74,10 +75,10 @@ public class CarpoolingController {
 		} 
 		
 		//刷新操作
-		else if (Carpooling_Date != null && Flush_Rus.equals("flush")) {
+		else if (c_id != null && Flush_Rus != null) {
 			
-			int c_id =
-			springManager.GetCarpooling_idByCarpooling_Date(Carpooling_Date);
+		/*	int c_id =
+			springManager.GetCarpooling_idByCarpooling_Date(Carpooling_Date);*/
 			 
 			List<Carpooling> Carpooling = springManager.FlushCarpooling(c_id);
 			
@@ -89,14 +90,14 @@ public class CarpoolingController {
 		} 
 		
 		//下拉分页操作
-		else if(Carpooling_Date != null && !Flush_Rus.equals("flush")){
+		else if(c_id != null && Flush_Rus == null){
 			
-			int  c_id =
-			  springManager.GetCarpooling_idByCarpooling_Date(Carpooling_Date);
+			/*int  c_id =
+			  springManager.GetCarpooling_idByCarpooling_Date(Carpooling_Date);*/
 			 
 			Long Last_c_id = springManager.SelectLastCarpooling_id();
 			
-			if(c_id < Last_c_id ){
+			if(c_id == Last_c_id ){
 				
 				return CommonUtil.constructResponse(0, "下拉已无更多历史数据", null);
 				
@@ -380,7 +381,7 @@ public class CarpoolingController {
 	 * @param Carpooling_latitude
 	 * @return code,message,object
 	 */
-	@RequestMapping(value = "/InitiateCarpooling", method = RequestMethod.POST)
+	@RequestMapping(value = "/InitiateCarpooling", method = RequestMethod.GET)
 	@ResponseBody
 	public JSONObject InitiateCarpooling(HttpServletRequest request,
 			HttpServletResponse response, String Carpooling_origin,
@@ -389,6 +390,7 @@ public class CarpoolingController {
 			int Carpooling_count, double Carpooling_longitude,
 			double Carpooling_latitude, double End_Carpooling_longitude,
 			double End_Carpooling_latitude) {
+		
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		HttpSession htppSession = request.getSession();
 
@@ -403,6 +405,30 @@ public class CarpoolingController {
 				End_Carpooling_latitude, Main_user_id);
 
 		if (num > 0) {
+			
+			Long Carpooling_id = springManager.Return_LAST_INSERT_ID();
+			
+			JSONObject jsonObject = new JSONObject();
+			
+			Carpooling carpooling = new Carpooling();
+			
+			carpooling.setCarpooling_id(Carpooling_id);
+			carpooling.setCarpooling_origin(Carpooling_origin);
+			carpooling.setCarpooling_destination(Carpooling_destination);	
+			carpooling.setCarpooling_Date(Carpooling_Date);
+			carpooling.setCarpooling_distance(Carpooling_distance);
+			carpooling.setCarpooling_way(Carpooling_way);
+			carpooling.setCarpooling_count(Carpooling_count);
+			carpooling.setCarpooling_longitude(Carpooling_longitude);
+			carpooling.setCarpooling_latitude(Carpooling_latitude);
+			carpooling.setEnd_Carpooling_longitude(End_Carpooling_longitude);
+			carpooling.setEnd_Carpooling_latitude(End_Carpooling_latitude);
+	
+			jsonObject.put("pushMapCarpooling", carpooling);
+			PushUtil pu = new PushUtil(jsonObject);
+			
+			pu.contextInitialized(null);
+			
 			return CommonUtil.constructResponse(1, "ok", null);
 		}
 

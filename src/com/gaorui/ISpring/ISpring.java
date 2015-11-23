@@ -11,6 +11,7 @@ import java.util.List;
 
 
 
+
 import com.alibaba.fastjson.JSONObject;
 import com.gaorui.entity.Carpooling_user;
 import com.gaorui.entity.Carpooling;
@@ -77,11 +78,13 @@ public interface ISpring {
 	public int GetCarpooling_idByCarpooling_Date( String Carpooling_Date);
 	
 	//下拉查找历史拼车贴
-	public List<Carpooling> GetHistoryCarpooling(int c_id);
+	public List<Carpooling> GetHistoryCarpooling(Long c_id);
 
 	//刷新帖子列表操作
-	public List<Carpooling> FlushCarpooling(int c_id);
+	public List<Carpooling> FlushCarpooling(Long c_id);
 	
 	//查找帖子最后一条数据
 	public Long SelectLastCarpooling_id();
+	
+	public Long Return_LAST_INSERT_ID();
 }

@@ -449,13 +449,13 @@ public class SpringManager implements ISpring {
 	}
 
 	@Override
-	public List<Carpooling> GetHistoryCarpooling(int c_id) {
+	public List<Carpooling> GetHistoryCarpooling(Long c_id) {
 		
 		return userDao.GetHistoryCarpooling(c_id);
 	}
 
 	@Override
-	public List<Carpooling> FlushCarpooling(int c_id) {
+	public List<Carpooling> FlushCarpooling(Long c_id) {
 		
 		return userDao.FlushCarpooling(c_id);
 	}
@@ -464,6 +464,12 @@ public class SpringManager implements ISpring {
 	public Long SelectLastCarpooling_id() {
 		
 		return userDao.SelectLastCarpooling_id();
+	}
+
+	@Override
+	public Long Return_LAST_INSERT_ID() {
+		
+		return userDao.Return_LAST_INSERT_ID();
 	}
 
 }

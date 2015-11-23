@@ -137,13 +137,17 @@ public interface UserDao {
 	
 	//下拉分页返回历史数据
 	@Select("SELECT "+carpooling+" FROM s_carpooling WHERE Carpooling_id<#{0} ORDER BY Carpooling_Date   DESC LIMIT 0,10")
-	public List<Carpooling> GetHistoryCarpooling(int c_id);
+	public List<Carpooling> GetHistoryCarpooling(Long c_id);
 	
 	//刷新操作
 	@Select("SELECT "+carpooling+" FROM s_carpooling  WHERE Carpooling_id>#{0} ORDER BY Carpooling_Date   DESC ")
-	public List<Carpooling> FlushCarpooling(int c_id);
+	public List<Carpooling> FlushCarpooling(Long c_id);
 	
 	//查找s_carpooling最后一条数据
 	@Select("SELECT Carpooling_id FROM s_carpooling ORDER BY Carpooling_Date  LIMIT 0,1")
 	public Long SelectLastCarpooling_id();
+	
+	//返回最后一条操作自增的id
+	@Select("SELECT LAST_INSERT_ID()")
+	public Long Return_LAST_INSERT_ID();
 }
