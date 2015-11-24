@@ -20,7 +20,7 @@ import com.gaorui.entity.Carpooling_user;
 import com.gaorui.entity.Carpooling;
 import com.gaorui.entity.User;
 import com.gaorui.util.CommonUtil;
-import com.gaorui.util.PushUtil;
+import com.gaorui.util.WebSocketPushUtil;
 
 @Controller
 public class CarpoolingController {
@@ -425,9 +425,10 @@ public class CarpoolingController {
 			carpooling.setEnd_Carpooling_latitude(End_Carpooling_latitude);
 	
 			jsonObject.put("pushMapCarpooling", carpooling);
-			PushUtil pu = new PushUtil(jsonObject);
 			
-			pu.contextInitialized(null);
+			WebSocketPushUtil wspu = new WebSocketPushUtil();
+			
+			wspu.hello(jsonObject, null);
 			
 			return CommonUtil.constructResponse(1, "ok", null);
 		}

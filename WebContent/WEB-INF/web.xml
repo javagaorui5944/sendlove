@@ -47,7 +47,7 @@
     
     
     <!-- comet4j 配置  -->
-      <listener>
+     <!--  <listener>
     <description>Comet4J容器侦听</description>
     <listener-class>org.comet4j.core.CometAppListener</listener-class>
   </listener>
@@ -64,5 +64,5 @@
   <listener>
     <description>HelloWorld</description>
     <listener-class>com.gaorui.util.PushUtil</listener-class>
-  </listener>
+  </listener> -->
 </web-app>
