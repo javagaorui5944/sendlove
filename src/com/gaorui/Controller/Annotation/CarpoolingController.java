@@ -1,6 +1,9 @@
 package com.gaorui.Controller.Annotation;
 
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -14,6 +17,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
+
+
+
+
+
+
+
 import com.alibaba.fastjson.JSONObject;
 import com.gaorui.ISpring.ISpring;
 import com.gaorui.entity.Carpooling_user;
@@ -21,6 +32,7 @@ import com.gaorui.entity.Carpooling;
 import com.gaorui.entity.User;
 import com.gaorui.util.CommonUtil;
 import com.gaorui.util.WebSocketPushUtil;
+
 
 @Controller
 public class CarpoolingController {
@@ -178,6 +190,17 @@ public class CarpoolingController {
 
 		double distance = CommonUtil.GetDistance(Me_user_latitude,
 				Me_user_longitude, main_user_latitude, main_user_longitude);
+		
+		Carpooling_user cu = springManager.JudgeCarpoolingByCarpooling_User_id(Carpooling_id, user.getUser_id());
+		Carpooling 	carpooling2 = springManager.JudgeCarpoolingByCarpooling_id(Carpooling_id, user.getUser_id());
+		
+		System.out.println(cu+"--"+carpooling2+"----");
+		int isresult = 0; 
+		if(cu != null | carpooling2!=null){
+			isresult =1 ;
+		}
+		
+		jsonObject.put("isresult", isresult);
 
 		jsonObject.put("distance", distance);
 
@@ -385,24 +408,46 @@ public class CarpoolingController {
 	@ResponseBody
 	public JSONObject InitiateCarpooling(HttpServletRequest request,
 			HttpServletResponse response, String Carpooling_origin,
-			String Carpooling_destination, String Carpooling_Date,
-			int Carpooling_distance, String Carpooling_way,
-			int Carpooling_count, double Carpooling_longitude,
-			double Carpooling_latitude, double End_Carpooling_longitude,
-			double End_Carpooling_latitude) {
+			String Carpooling_destination,  String Carpooling_way,
+			int Carpooling_count) {
 		
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		HttpSession htppSession = request.getSession();
-
+		String Carpooling_origin1 = null;
+		String Carpooling_destination1 =null;
+		String Carpooling_way1 =null;
+		try {
+			Carpooling_origin1 = new String(Carpooling_origin.getBytes("iso-8859-1"), "utf-8");
+			Carpooling_destination1 = new String(Carpooling_destination.getBytes("iso-8859-1"), "utf-8");
+			Carpooling_way1 = new String(Carpooling_way.getBytes("iso-8859-1"), "utf-8");
+		} catch (UnsupportedEncodingException e) {
+		
+			e.printStackTrace();
+		}
+		
+		Date now = new Date();
+		
+		SimpleDateFormat myFmt2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+	
+		
+		String Carpooling_Date  =	myFmt2.format(now);
+		
 		User user = (User) htppSession.getAttribute("user");
-
+		if(user == null ){
+			
+			return CommonUtil.constructResponse(0, "false", null);
+			
+		}
 		Long Main_user_id = user.getUser_id();
-
-		int num = springManager.InitiateCarpooling(Carpooling_origin,
-				Carpooling_destination, Carpooling_Date, Carpooling_distance,
-				Carpooling_way, Carpooling_count, Carpooling_longitude,
-				Carpooling_latitude, End_Carpooling_longitude,
-				End_Carpooling_latitude, Main_user_id);
+		double Carpooling_longitude = user.getUser_longitude();
+		double Carpooling_latitude = user.getUser_latitude();
+		
+		int num = springManager.InitiateCarpooling(Carpooling_origin1,
+				Carpooling_destination1, Carpooling_Date,
+				Carpooling_way1, Carpooling_count, Carpooling_longitude,
+				Carpooling_latitude,
+				 Main_user_id);
 
 		if (num > 0) {
 			
@@ -416,19 +461,17 @@ public class CarpoolingController {
 			carpooling.setCarpooling_origin(Carpooling_origin);
 			carpooling.setCarpooling_destination(Carpooling_destination);	
 			carpooling.setCarpooling_Date(Carpooling_Date);
-			carpooling.setCarpooling_distance(Carpooling_distance);
+		//	carpooling.setCarpooling_distance(Carpooling_distance);
 			carpooling.setCarpooling_way(Carpooling_way);
 			carpooling.setCarpooling_count(Carpooling_count);
 			carpooling.setCarpooling_longitude(Carpooling_longitude);
 			carpooling.setCarpooling_latitude(Carpooling_latitude);
-			carpooling.setEnd_Carpooling_longitude(End_Carpooling_longitude);
-			carpooling.setEnd_Carpooling_latitude(End_Carpooling_latitude);
-	
+			
 			jsonObject.put("pushMapCarpooling", carpooling);
 			
+			//推送给所有连接的客户端(WebSocket)
 			WebSocketPushUtil wspu = new WebSocketPushUtil();
-			
-			wspu.hello(jsonObject, null);
+			wspu.hello(null, null,jsonObject);
 			
 			return CommonUtil.constructResponse(1, "ok", null);
 		}

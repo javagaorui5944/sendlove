@@ -19,7 +19,7 @@ public interface UserDao {
 
 	final String integral = "integral_id,user_id,integral_level,integral_carpoolingcount,integral_initiatecount,integral_goodpraisecount";
 
-	final String carpooling = "Carpooling_id,user_id,Carpooling_origin,Carpooling_destination,Carpooling_Date,Carpooling_distance,Carpooling_way,Carpooling_count,Carpooling_nearme,Carpooling_content,Carpooling_status,Carpooling_longitude,Carpooling_latitude,End_Carpooling_longitude,End_Carpooling_latitude";
+	final String carpooling = "Carpooling_id,user_id,Carpooling_origin,Carpooling_destination,Carpooling_Date,Carpooling_distance,Carpooling_way,Carpooling_count,Carpooling_nearme,Carpooling_content,Carpooling_status,Carpooling_longitude,Carpooling_latitude";
 
 	final String carpooling_user = "Carpooling_id,user_id";
 
@@ -62,18 +62,17 @@ public interface UserDao {
 	public int updatecu_statusByUser_idCarpooling_id(Long user_id,
 			Long Carpooling_id);
 
-	@Insert("insert into s_carpooling(Carpooling_origin,Carpooling_destination,Carpooling_Date,Carpooling_distance,Carpooling_way,Carpooling_count,Carpooling_longitude,Carpooling_latitude,End_Carpooling_longitude,End_Carpooling_latitude,user_id) values('${Carpooling_origin}','${Carpooling_destination}','${Carpooling_Date}','${Carpooling_distance}','${Carpooling_way}',${Carpooling_count},${Carpooling_longitude},${Carpooling_latitude}, ${End_Carpooling_longitude},${End_Carpooling_latitude},${user_id})")
+	@Insert("insert into s_carpooling(Carpooling_origin,Carpooling_destination,Carpooling_Date,Carpooling_way,Carpooling_count,Carpooling_longitude,Carpooling_latitude,user_id) values('${Carpooling_origin}','${Carpooling_destination}','${Carpooling_Date}','${Carpooling_way}',${Carpooling_count},${Carpooling_longitude},${Carpooling_latitude},${user_id})")
 	public int InitiateCarpooling(
 			@Param("Carpooling_origin") String Carpooling_origin,
 			@Param("Carpooling_destination") String Carpooling_destination,
 			@Param("Carpooling_Date") String Carpooling_Date,
-			@Param("Carpooling_distance") int Carpooling_distance,
+
 			@Param("Carpooling_way") String Carpooling_way,
 			@Param("Carpooling_count") int Carpooling_count,
 			@Param("Carpooling_longitude") double Carpooling_longitude,
 			@Param("Carpooling_latitude") double Carpooling_latitude,
-			@Param("End_Carpooling_longitude") double End_Carpooling_longitude,
-			@Param("End_Carpooling_latitude") double End_Carpooling_latitude,
+			
 			@Param("user_id") Long user_id);
 
 	@Update("UPDATE s_carpooling SET Carpooling_status =100 WHERE Carpooling_id=#{0}")
@@ -91,6 +90,12 @@ public interface UserDao {
 			+ " FROM carpooling_user WHERE Carpooling_id=#{0} AND user_id=#{1}")
 	public Carpooling_user JudgeCarpoolingByCarpooling_User_id(
 			Long Carpooling_id, Long user_id);
+	
+	
+	@Select("SELECT " + carpooling
+			+ " FROM s_carpooling WHERE Carpooling_id=#{0} AND user_id=#{1}")
+	public Carpooling JudgeCarpoolingByCarpooling_id(
+			Long Carpooling_id, Long user_id);
 
 	// 根据user_id查找是否在s_carpooling表中
 	@Select("SELECT " + carpooling
@@ -104,14 +109,11 @@ public interface UserDao {
 	public List<Carpooling_user> SelectCarpooling_UserByUser_id(Long user_id);
 
 	// 用户注册
-	@Insert("INSERT INTO s_user(user_id,user_tel,user_password,user_longitude,user_latitude,user_name,user_content) VALUES(${user_id},${user_tel},'${user_password}','${user_longitude}',${user_latitude},'${user_name}','${user_content}')")
+	@Insert("INSERT INTO s_user(user_id,user_tel,user_password,user_name) VALUES(${user_id},${user_tel},'${user_password}','${user_name}')")
 	public int InsertS_user(@Param("user_id") Long user_id,
 			@Param("user_tel") Long user_tel,
-			@Param("user_password") String user_password,
-			@Param("user_longitude") double user_longitude,
-			@Param("user_latitude") double user_latitude,
-			@Param("user_name") String user_name,
-			@Param("user_content") String user_content);
+			@Param("user_password") String user_password,	
+			@Param("user_name") String user_name);
 	
 	//用户注册后个人信息插入
 	@Insert("INSERT INTO s_integral(user_id) VALUES(#{0})")
@@ -150,4 +152,8 @@ public interface UserDao {
 	//返回最后一条操作自增的id
 	@Select("SELECT LAST_INSERT_ID()")
 	public Long Return_LAST_INSERT_ID();
+	
+	//地图初始化用户所在地经纬度
+	@Update("UPDATE s_user SET user_longitude=#{0},user_latitude=#{1} WHERE  user_id=#{2}")
+	public int UpdateUser_L(double user_longitude,double user_latitude,Long user_id);
 }

@@ -77,10 +77,8 @@ public class UserController {
 			HttpServletResponse response,
 			@RequestParam(value = "user_tel", required = false) Long user_tel,
 			@RequestParam(value="user_password", required = false)String user_password, 
-			@RequestParam(value="user_longitude", required = false)double user_longitude, 
-			@RequestParam(value="user_latitude", required = false)double user_latitude,
-			@RequestParam(value="user_name", required = false)String user_name, 
-			@RequestParam(value="user_content", required = false)String user_content) {
+			@RequestParam(value="user_name", required = false)String user_name
+		) {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 
 		System.out.println("user_tel" + user_tel);
@@ -93,7 +91,7 @@ public class UserController {
 		}
 		
 		int num = springManager.InsertS_user(user_tel, user_tel, user_password,
-				user_longitude, user_latitude, user_name, user_content);
+				 user_tel.toString());
 
 		HttpSession httpSession = request.getSession();
 
@@ -102,10 +100,10 @@ public class UserController {
 		if (num > 0) {
 			User user = new User();
 
-			user.setUser_content(user_content);
+		//	user.setUser_content(user_content);
 			user.setUser_id(user_tel);
-			user.setUser_latitude(user_latitude);
-			user.setUser_longitude(user_longitude);
+		//	user.setUser_latitude(user_latitude);
+		//	user.setUser_longitude(user_longitude);
 			user.setUser_name(user_name);
 			user.setUser_password(user_password);
 			httpSession.setAttribute("user", user);

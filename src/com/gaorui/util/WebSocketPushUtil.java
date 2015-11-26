@@ -2,6 +2,7 @@ package com.gaorui.util;
 
 import java.util.HashMap;
 import java.util.Iterator;
+
 import java.util.Set;
 
 import javax.websocket.*;
@@ -16,7 +17,7 @@ public class WebSocketPushUtil {
 	static HashMap<String, Session> Sessions = new HashMap<String, Session>();
 
 	@OnMessage
-	public void hello(JSONObject carpoolings, Session session) {
+	public void hello(String message, Session session, JSONObject jsonObject) {
 
 		if (session != null) {
 			session1 = session;
@@ -31,7 +32,7 @@ public class WebSocketPushUtil {
 
 		else if (session == null) {
 			session = session1;
-			System.out.println("info" + carpoolings.toString());
+			System.out.println("info" + jsonObject.toString());
 			{
 
 				Session openSession = null;
@@ -50,7 +51,7 @@ public class WebSocketPushUtil {
 								+ openSession.getId());
 
 						openSession.getBasicRemote().sendText(
-								carpoolings.toString());
+								jsonObject.toString());
 					}
 
 				} catch (Exception e) {

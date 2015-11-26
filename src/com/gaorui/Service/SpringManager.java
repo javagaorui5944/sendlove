@@ -1,6 +1,6 @@
 package com.gaorui.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -83,16 +83,14 @@ public class SpringManager implements ISpring {
 	@Override
 	public int InitiateCarpooling(String Carpooling_origin,
 			String Carpooling_destination, String Carpooling_Date,
-			int Carpooling_distance, String Carpooling_way,
+		 String Carpooling_way,
 			int Carpooling_count, double Carpooling_longitude,
-			double Carpooling_latitude, double End_Carpooling_longitude,
-			double End_Carpooling_latitude,Long Main_user_id) {
+			double Carpooling_latitude, Long Main_user_id) {
 
 		return userDao.InitiateCarpooling(Carpooling_origin,
-				Carpooling_destination, Carpooling_Date, Carpooling_distance,
+				Carpooling_destination, Carpooling_Date,
 				Carpooling_way, Carpooling_count, Carpooling_longitude,
-				Carpooling_latitude, End_Carpooling_longitude,
-				 End_Carpooling_latitude,Main_user_id);
+				Carpooling_latitude,Main_user_id);
 	}
 
 	@Override
@@ -123,11 +121,10 @@ public class SpringManager implements ISpring {
 
 	@Override
 	public int InsertS_user(Long user_id, Long user_tel, String user_password,
-			double user_longitude, double user_latitude, String user_name,
-			String user_content) {
+		 String user_name) {
 
 		return userDao.InsertS_user(user_id, user_tel, user_password,
-				user_longitude, user_latitude, user_name, user_content);
+			 user_name);
 	}
 
 	@Override
@@ -422,11 +419,11 @@ public class SpringManager implements ISpring {
 
 	//查找出符合用户给出周围范围内的所有帖子
 	@Override
-	public List<Carpooling> ShowMapS_carPooling(double user_latitude,double user_longitude,int radius) {
+	public List<Carpooling> ShowMapS_carPooling(double user_latitude,double user_longitude) {
 		
 		List<Carpooling> Carpoolings = userDao.ShowMapS_carPooling();
 		
-		List<Carpooling> Range_Carpoolings = new ArrayList<Carpooling>();
+	/*	List<Carpooling> Range_Carpoolings = new ArrayList<Carpooling>();
 		
 		for (Carpooling c : Carpoolings) {
 			
@@ -438,8 +435,8 @@ public class SpringManager implements ISpring {
 				
 				Range_Carpoolings.add(c);
 			}
-		}
-		return Range_Carpoolings;
+		}*/
+		return Carpoolings;
 	}
 
 	@Override
@@ -470,6 +467,20 @@ public class SpringManager implements ISpring {
 	public Long Return_LAST_INSERT_ID() {
 		
 		return userDao.Return_LAST_INSERT_ID();
+	}
+
+	@Override
+	public int UpdateUser_L(double user_longitude, double user_latitude,
+			Long user_id) {
+		
+		return userDao.UpdateUser_L(user_longitude, user_latitude, user_id);
+	}
+
+	@Override
+	public Carpooling JudgeCarpoolingByCarpooling_id(Long Carpooling_id,
+			Long user_id) {
+	
+		return userDao.JudgeCarpoolingByCarpooling_id(Carpooling_id, user_id);
 	}
 
 }

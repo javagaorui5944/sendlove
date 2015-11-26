@@ -12,6 +12,8 @@ import java.util.List;
 
 
 
+
+
 import com.alibaba.fastjson.JSONObject;
 import com.gaorui.entity.Carpooling_user;
 import com.gaorui.entity.Carpooling;
@@ -41,10 +43,9 @@ public interface ISpring {
 
 	public int InitiateCarpooling(String Carpooling_origin,
 			String Carpooling_destination, String Carpooling_Date,
-			int Carpooling_distance, String Carpooling_way,
+			 String Carpooling_way,
 			int Carpooling_count, double Carpooling_longitude,
-			double Carpooling_latitude,double End_Carpooling_longitude,
-			double End_Carpooling_latitude, Long Main_user_id);
+			double Carpooling_latitude, Long Main_user_id);
 
 	public int updateCarpooling_status(Long Carpooling_id);
 
@@ -56,8 +57,7 @@ public interface ISpring {
 	public List<Carpooling_user> SelectCarpooling_UserByUser_id(Long user_id);
 
 	public int InsertS_user(Long user_id, Long user_tel, String user_password,
-			double user_longitude, double user_latitude, String user_name,
-			String user_content);
+		 String user_name);
 	
 	public int selectCarCountByCarpooling_id(Long Carpooling_id);
 	
@@ -73,7 +73,7 @@ public interface ISpring {
 	public JSONObject My_Carpooling(List<Carpooling> carpoolings,Long user_id);
 	
 	//地图
-	public List<Carpooling> ShowMapS_carPooling(double user_latitude,double user_longitude,int radius);
+	public List<Carpooling> ShowMapS_carPooling(double user_latitude,double user_longitude);
 	
 	public int GetCarpooling_idByCarpooling_Date( String Carpooling_Date);
 	
@@ -87,4 +87,9 @@ public interface ISpring {
 	public Long SelectLastCarpooling_id();
 	
 	public Long Return_LAST_INSERT_ID();
+	
+	public int UpdateUser_L(double user_longitude,double user_latitude,Long user_id);
+	
+	public Carpooling JudgeCarpoolingByCarpooling_id(
+			Long Carpooling_id, Long user_id);
 }
