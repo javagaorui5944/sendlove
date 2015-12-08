@@ -482,5 +482,10 @@ public class SpringManager implements ISpring {
 	
 		return userDao.JudgeCarpoolingByCarpooling_id(Carpooling_id, user_id);
 	}
+	
+	public Carpooling JudgeCarpoolingByCarpooling_id(Long Carpooling_id) {
+	
+		return null;
+	}
 
 }
