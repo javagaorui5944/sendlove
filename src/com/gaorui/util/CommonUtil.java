@@ -1,5 +1,8 @@
 package com.gaorui.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 import com.alibaba.fastjson.JSONObject;
@@ -68,25 +71,25 @@ public class CommonUtil {
 
 	public static double GetDistance(double lat1, double lng1, double lat2,
 			double lng2) {
-		
+
 		final double EARTH_RADIUS = 6378.137;
-		
+
 		double radLat1 = rad(lat1);
-		
+
 		double radLat2 = rad(lat2);
-		
+
 		double a = radLat1 - radLat2;
-		
+
 		double b = rad(lng1) - rad(lng2);
-		
+
 		double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2)
 				+ Math.cos(radLat1) * Math.cos(radLat2)
 				* Math.pow(Math.sin(b / 2), 2)));
-		
+
 		s = s * EARTH_RADIUS;
-		
+
 		s = Math.round(s * 10000) / 10000;
-		
+
 		return s;
 	}
 
@@ -111,7 +114,7 @@ public class CommonUtil {
 
 		s = s * EARTH_RADIUS;
 
-		s = Math.round(s * 10000)/ 1000;// 返回长度单位为m
+		s = Math.round(s * 10000) / 1000;// 返回长度单位为m
 
 		if (radius > s) {
 			res = true;
@@ -119,5 +122,27 @@ public class CommonUtil {
 
 		return res;
 
+	}
+
+	// 比较时间的大小
+	public static int compare_date(String DATE1, String DATE2) {
+
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		try {
+			Date dt1 = df.parse(DATE1);
+			Date dt2 = df.parse(DATE2);
+			if (dt1.getTime() > dt2.getTime()) {
+			//	System.out.println("dt1在dt2前");
+				return 1;
+			} else if (dt1.getTime() < dt2.getTime()) {
+			//	System.out.println("dt1在dt2后");
+				return -1;
+			} else {
+				return 0;
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return 0;
 	}
 }

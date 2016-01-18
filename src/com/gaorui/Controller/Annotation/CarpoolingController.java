@@ -1,6 +1,7 @@
 package com.gaorui.Controller.Annotation;
 
 import java.io.UnsupportedEncodingException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 
 
 
@@ -428,8 +430,6 @@ public class CarpoolingController {
 		Date now = new Date();
 		
 		SimpleDateFormat myFmt2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
-	
 		
 		String Carpooling_Date  =	myFmt2.format(now);
 		

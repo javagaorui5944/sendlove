@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project-modules id="moduleCoreId" project-version="1.5.0">
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="SpringMvcTest">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <property name="context-root" value="SpringMvcTest"/>
         <property name="java-output-path" value="/SpringMvcTest/build/classes"/>
+        <property name="context-root" value="sendlove"/>
     </wb-module>
 </project-modules>
