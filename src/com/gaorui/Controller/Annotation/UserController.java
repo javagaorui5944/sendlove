@@ -1,7 +1,7 @@
 package com.gaorui.Controller.Annotation;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -163,7 +163,7 @@ public class UserController {
 	 * @param request
 	 * @return code,message,object
 	 */
-	@RequestMapping(value = "/ChatOneByOne", method = RequestMethod.GET)
+	@RequestMapping(value = "/ChatOneByOne", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject ChatOneByOne(HttpServletRequest request,
 			HttpServletResponse response, Long receive_User_id) {
@@ -189,15 +189,17 @@ public class UserController {
 			if (o.get("send_User_id").equals(user_id)
 					&& o.get("receive_User_id").equals(receive_User_id)) {
 				System.out.println("Test");
-				jsonObject.put("send_User_id", user_id);
-				jsonObject.put("sendText", o.get("sendText"));
-				jsonObject.put("Now_Date", o.get("Now_Date"));
+
+				jsonObject.put("receive_sendText", o.get("sendText"));
+
+				jsonObject.put("type", 1);
 				jsonArray1.add(jsonObject);
 			} else if (o.get("send_User_id").equals(receive_User_id)
 					&& o.get("receive_User_id").equals(user_id)) {
-				jsonObject.put("receive_User_id", user_id);
+
 				jsonObject.put("receive_sendText", o.get("sendText"));
-				jsonObject.put("receive_Now_Date", o.get("Now_Date"));
+
+				jsonObject.put("type", 2);
 				jsonArray1.add(jsonObject);
 			}
 		}
@@ -221,9 +223,14 @@ public class UserController {
 			@RequestParam(value = "receive_User_id", required = false) Long receive_User_id) {
 
 		response.setHeader("Access-Control-Allow-Origin", "*");
-
+		String sendText1 = null;
 		JSONObject jsonObject = new JSONObject();
+		try {
+			sendText1 = new String(sendText.getBytes("iso-8859-1"), "utf-8");
+		} catch (UnsupportedEncodingException e) {
 
+			e.printStackTrace();
+		}
 		Date now = new Date();
 
 		SimpleDateFormat myFmt2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -238,11 +245,38 @@ public class UserController {
 		System.out.println("receive_User_id:" + receive_User_id);
 		jsonObject.put("send_User_id", send_User_id);
 		jsonObject.put("receive_User_id", receive_User_id);
-		jsonObject.put("sendText", sendText);
+		jsonObject.put("sendText", sendText1);
 		jsonObject.put("Now_Date", Now_Date);
-
+		System.out.println("sendText:" + sendText + "receive_User_id:"
+				+ receive_User_id);
 		JSONArray.add(jsonObject);
 		return CommonUtil.constructResponse(1, "发送聊天消息成功", null);
+	}
+
+	/**
+	 * 判断目前登录自己的id
+	 * 
+	 * @param request
+	 * @return code,message,object
+	 */
+	@RequestMapping(value = "/JudgePeople", method = RequestMethod.GET)
+	@ResponseBody
+	public JSONObject JudgePeople(HttpServletRequest request,
+			HttpServletResponse response) {
+
+		response.setHeader("Access-Control-Allow-Origin", "*");
+
+		JSONObject jsonObject = new JSONObject();
+		
+		HttpSession httpSession = request.getSession();
+		
+		User user = (User) httpSession.getAttribute("user");
+
+		Long send_User_id = user.getUser_id();
+		
+		jsonObject.put("user_id", send_User_id);
+		
+		return CommonUtil.constructResponse(1, "判断目前登录自己的id", jsonObject);
 	}
 
 }
